@@ -32,7 +32,7 @@
          <div style="position:relative;top:0;left:0;right:0;z-index:100;-webkit-transform:translate3D(0, 0, 0);-ms-transform:translate3D(0, 0, 0);transform:translate3D(0, 0, 0);background:#000000;padding-top:7.5px;margin-bottom:1.rem;height:80px;" class="headroom headroom--unfixed">
             <div size="500" class="sc-htpNat fphlTp">
                <div style="margin:0 auto;max-width:960px" class="css-zkfaav">
-				  <a href="/"><img height="84" alt="wicked" src="/assets/images/WICKED.png" style="display:inline"/></a>
+				  <a href="/"><img height="80" alt="wicked" src="/assets/images/WICKED.png" style="display:inline"/></a>
                   <div class="css-1ntkiwo"></div>
                </div>
          </div>
@@ -65,7 +65,7 @@ Aggressive OS guesses: Linux 3.12 (95%), Linux 3.13 (95%), Linux 3.2 - 4.9 (95%)
 No exact OS matches for host (test conditions non-ideal).
 Network Distance: 2 hops
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-</pre><code>
+</code></pre>
 <p>HTTP is open and SSH is running on port 22. I will enumerate HTTP, by visiting the website first.</p>
 <img src="/assets/images/htb/shocker/shocker_1.jpg"><br>
 <p>It is an empty webpage with an image it seems. I will run a directory scanner against the website and we will notice a cgi-bin/ directory, which opens up possibility of shellshock vulnerability.</p>
